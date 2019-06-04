@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="personalHistory">
+
+	<select id="returnRegisterUserList" resultType="hashmap">
+		SELECT user_idx
+			, user_name
+			, user_comp
+			, user_dept
+			, user_register_date
+		FROM user_info
+	</select>
+	
+	<!-- 개인이력카드등록 -->
+	<insert id="registerUser" parameterType="object" useGeneratedKeys="true">
+		INSERT INTO user_info
+			(
+				<!-- user name 필수입력사항 -->
+				user_name
+				<if test="userSocialSecunum != null">, user_social_secunum</if>
+				<if test="userSex != null">, user_sex</if>
+				<if test="userComp != null">, user_comp</if>
+				<if test="userCompEnterdate != null">, user_comp_enterdate</if>
+				<if test="userDept != null">, user_dept</if>
+				<if test="userSpot != null">, user_spot</if>
+				<if test="userArmyServPeriod != null">, user_army_serv_period</if>
+				<if test="userMaritalStatus != null">, user_marital_status</if>
+				<if test="userArmyServEnter != null">, user_army_serv_enter</if>
+				<if test="userArmyServLeave != null">, user_army_serv_leave</if>
+				<if test="userArmyServ != null">, user_army_serv</if>
+				<if test="userTelnumWired != null">, user_telnum_wired</if>
+				<if test="userTelnumWireless != null">, user_telnum_wireless</if>
+				<if test="userEmail != null">, user_email</if>
+				<if test="userAddress != null">, user_address</if>
+			)
+		VALUES (
+				<!-- user name 필수입력사항 -->
+				#{userName[0]}
+				<if test="userSocialSecunum != null">, #{userSocialSecunum[0]}</if>
+				<if test="userSex != null">, #{userSex[0]}</if>
+				<if test="userComp != null">, #{userComp[0]}</if>
+				<if test="userCompEnterdate != null">, #{userCompEnterdate[0]}</if>
+				<if test="userDept != null">, #{userDept[0]}</if>
+				<if test="userSpot != null">, #{userSpot[0]}</if>
+				<if test="userArmyServPeriod != null">, #{userArmyServPeriod[0]}</if>
+				<if test="userMaritalStatus != null">, #{userMaritalStatus[0]}</if>
+				<if test="userArmyServEnter != null">, #{userArmyServEnter[0]}</if>
+				<if test="userArmyServLeave != null">, #{userArmyServLeave[0]}</if>
+				<if test="userArmyServ != null">, #{userArmyServ[0]}</if>
+				<if test="userTelnumWired != null">, #{userTelnumWired[0]}</if>
+				<if test="userTelnumWireless != null">, #{userTelnumWireless[0]}</if>
+				<if test="userEmail != null">, #{userEmail[0]}</if>
+				<if test="userAddress != null">, #{userAddress[0]}</if>
+			)
+			
+			<selectKey resultType="string" keyProperty="user_idx" order="AFTER">
+		        SELECT LAST_INSERT_ID()      
+		    </selectKey>
+	</insert>
+	
+	<!-- 개인이력카드등록 -->
+	<update id="registerUserUpdate" parameterType="object">
+		UPDATE user_info
+		SET user_name = <choose><when test="userName != null">#{userName[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_social_secunum = <choose><when test="userSocialSecunum != null">#{userSocialSecunum[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_sex = <choose><when test="userSex != null">#{userSex[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_comp = <choose><when test="userComp != null">#{userComp[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_comp_enterdate = <choose><when test="userCompEnterdate != null">#{userCompEnterdate[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_dept = <choose><when test="userDept != null">#{userDept[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_spot = <choose><when test="userSpot != null">#{userSpot[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_army_serv_period = <choose><when test="userArmyServPeriod != null">#{userArmyServPeriod[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_marital_status = <choose><when test="userMaritalStatus != null">#{userMaritalStatus[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_army_serv_enter = <choose><when test="userArmyServEnter != null">#{userArmyServEnter[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_army_serv_leave = <choose><when test="userArmyServLeave != null">#{userArmyServLeave[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_army_serv = <choose><when test="userArmyServ != null">#{userArmyServ[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_telnum_wired = <choose><when test="userTelnumWired != null">#{userTelnumWired[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_telnum_wireless = <choose><when test="userTelnumWireless != null">#{userTelnumWireless[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_email = <choose><when test="userEmail != null">#{userEmail[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_address = <choose><when test="userAddress != null">#{userAddress[0]}</when><otherwise>NULL</otherwise></choose>
+		WHERE user_idx = #{userIdx[0]}
+	</update>
+	
+	<insert id="insertUserFlexibleData" parameterType="hashmap">
+		INSERT INTO user_info_${tbName}
+			(
+				<!-- user idx 필수입력사항 상위 테이블의 키값을 받음 -->
+				user_idx
+				<if test="eduSchoolName != null">, edu_school_name</if>
+				<if test="eduStatus != null">, edu_status</if>
+				<if test="eduYear != null">, edu_year</if>
+				<if test="eduMonth != null">, edu_month</if>
+				<if test="qualifiName != null">, qualifi_name</if>
+				<if test="qualifiGetdate != null">, qualifi_getdate</if>
+				<if test="carreerCompName != null">, carreer_comp_name</if>
+				<if test="carreerEnterdate != null">, carreer_enterdate</if>
+				<if test="carreerLeavedate != null">, carreer_leavedate</if>
+				<if test="carreerSpot != null">, carreer_spot</if>
+				<if test="carreerResponsib != null">, carreer_responsib</if>
+				<if test="trainingName != null">, training_name</if>
+				<if test="trainingStratdate != null">, training_startdate</if>
+				<if test="trainingEnddate != null">, training_enddate</if>
+				<if test="trainingAgency != null">, training_agency</if>
+				<if test="licenName != null">, licen_name</if>
+				<if test="licenSkillLevel != null">, licen_skill_level</if>
+				<if test="skillProjectName != null">, skill_project_name</if>
+				<if test="skillStartdate != null">, skill_startdate</if>
+				<if test="skillEnddate != null">, skill_enddate</if>
+				<if test="skillCustomerComp != null">, skill_customer_comp</if>
+				<if test="skillWorkComp != null">, skill_work_comp</if>
+				<if test="skillIndustry != null">, skill_industry</if>
+				<if test="skillApplied != null">, skill_applied</if>
+				<if test="skillRole != null">, skill_role</if>
+				<if test="skillModel != null">, skill_model</if>
+				<if test="skillOS != null">, skill_os</if>
+				<if test="skillLang != null">, skill_lang</if>
+				<if test="skillDBMS != null">, skill_dbms</if>
+				<if test="skillTool != null">, skill_tool</if>
+				<if test="skillComm != null">, skill_comm</if>
+				<if test="skillETC != null">, skill_etc</if>
+			)
+		VALUES (
+				<!-- user name 필수입력사항 -->
+				#{userIdx}
+				<if test="eduSchoolName != null">, #{eduSchoolName}</if>
+				<if test="eduStatus != null">, #{eduStatus}</if>
+				<if test="eduYear != null">, #{eduYear}</if>
+				<if test="eduMonth != null">, #{eduMonth}</if>
+				<if test="qualifiName != null">, #{qualifiName}</if>
+				<if test="qualifiGetdate != null">, #{qualifiGetdate}</if>
+				<if test="carreerCompName != null">, #{carreerCompName}</if>
+				<if test="carreerEnterdate != null">, #{carreerEnterdate}</if>
+				<if test="carreerLeavedate != null">, #{carreerLeavedate}</if>
+				<if test="carreerSpot != null">, #{carreerSpot}</if>
+				<if test="carreerResponsib != null">, #{carreerResponsib}</if>
+				<if test="trainingName != null">, #{trainingName}</if>
+				<if test="trainingStratdate != null">, #{trainingStratdate}</if>
+				<if test="trainingEnddate != null">, #{trainingEnddate}</if>
+				<if test="trainingAgency != null">, #{trainingAgency}</if>
+				<if test="licenName != null">, #{licenName}</if>
+				<if test="licenSkillLevel != null">, #{licenSkillLevel}</if>
+				<if test="skillProjectName != null">, #{skillProjectName}</if>
+				<if test="skillStartdate != null">, #{skillStartdate}</if>
+				<if test="skillEnddate != null">, #{skillEnddate}</if>
+				<if test="skillCustomerComp != null">, #{skillCustomerComp}</if>
+				<if test="skillWorkComp != null">, #{skillWorkComp}</if>
+				<if test="skillIndustry != null">, #{skillIndustry}</if>
+				<if test="skillApplied != null">, #{skillApplied}</if>
+				<if test="skillRole != null">, #{skillRole}</if>
+				<if test="skillModel != null">, #{skillModel}</if>
+				<if test="skillOS != null">, #{skillOS}</if>
+				<if test="skillLang != null">, #{skillLang}</if>
+				<if test="skillDBMS != null">, #{skillDBMS}</if>
+				<if test="skillTool != null">, #{skillTool}</if>
+				<if test="skillComm != null">, #{skillComm}</if>
+				<if test="skillETC != null">, #{skillETC}</if>
+			)
+	</insert>
+	
+	
+	<delete id="deleteCareerData" parameterType="hashmap">
+		DELETE FROM user_info_career
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	<delete id="deleteEduData" parameterType="hashmap">
+		DELETE FROM user_info_edu
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	<delete id="deleteLicenData" parameterType="hashmap">
+		DELETE FROM user_info_licen
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	<delete id="deleteQualifiData" parameterType="hashmap">
+		DELETE FROM user_info_qualifi
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	<delete id="deleteSkillData" parameterType="hashmap">
+		DELETE FROM user_info_skill
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	<delete id="deleteTrainingData" parameterType="hashmap">
+		DELETE FROM user_info_training
+		WHERE user_idx = #{userIdx}
+	</delete>
+	
+	
+	
+	<select id="getRegisterData" resultType="hashmap">
+		SELECT *
+		FROM user_info
+		WHERE
+			user_idx = #{userIdx}
+	</select>
+	
+	<select id="getRegisterFlexibleData" resultType="hashmap">
+		SELECT *
+		FROM user_info_${tbName}
+		WHERE
+			user_idx = #{userIdx}
+	</select>
+	
+	
+
+</mapper>

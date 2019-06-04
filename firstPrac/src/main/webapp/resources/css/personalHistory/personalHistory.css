@@ -1,0 +1,298 @@
+/*
+	global
+*/
+body{
+	min-width: 860px;
+}
+
+/*
+	input type date
+*/
+[type="date"] {
+
+  background:#fff url('../../../resources/img/icon/calendar_2.png')  97% 50% no-repeat ;
+}
+[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+
+.clear-pannel{
+	clear: both;
+}
+
+td{
+	font-size: 14px;
+}
+
+tbody tr{
+	background-color:#ffffff;
+	text-align: center;
+}
+
+/*
+	헤더 상태표시 및 버튼 레이아웃
+*/
+.status-display-pannel{
+	padding: 10px 10px 10px 0;
+	float: left;
+}
+.function-btn-pannel{
+	padding: 10px 10px 10px 0;
+	float: right;
+}
+
+.status-display-pannel h5{
+	color: #3b3b3b;
+	margin: 4px 0 0 16px;
+} 
+
+
+
+
+
+
+/*
+유저 정보
+*/
+.user-info-list-pannel{
+	margin:30px auto;
+	background-color:#1b00ff1a;
+	padding: 20px;
+	max-width: 1080px;
+}
+
+.personal-history-title-pannel{
+	border: solid 3px #666666;
+}
+
+.user-info-list-pannel h3 {
+    text-align: center;
+}
+
+
+
+
+
+/*
+유저 기본정보 테이블
+*/
+.user-info-list-pannel table{
+	border: solid 1px #666666;
+	margin: 10px 10px 0 10px;
+	width: 100%;
+}
+
+.user-info-list-pannel table tr{
+	height: 32px;
+}
+
+.user-info-list-pannel input{
+	width: calc(100% - 6px);
+	border: none;
+	height: 30px;
+}
+
+.user-info-list-pannel select{
+	width: 65px;
+	border: none;
+	height: 30px;
+	font-size: 11px;
+}
+
+
+
+
+
+
+/*
+유저 기본정보 첫번째 테이블 하위 td 정의
+*/
+.user-info-list-pannel .user-info-table1 td:nth-child(odd){
+	background-color:#dddddd;
+	width: 120px;
+	text-align: center;
+}
+.user-info-list-pannel .user-info-table1 td:nth-child(even){
+	background-color:#ffffff;
+}
+
+
+
+
+
+/*
+유저 기본정보 두번째 테이블 하위 td 정의
+*/
+.user-info-list-pannel .user-info-table2 tr td:first-child{
+	background-color:#dddddd;
+	width: 120px;
+	text-align: center;
+}
+.user-info-list-pannel .user-info-table2 tr td:not(:first-child){
+	background-color:#ffffff;
+}
+
+
+
+
+
+/*
+	학력사항 및 자격증사항
+*/
+
+.edu-and-qualifi-pannel div{
+	width: 50%;
+}
+
+.edu-and-qualifi-pannel div table{
+	width: calc(100% - 6px);
+}
+
+.edu-and-qualifi-pannel .edu-table-pannel{
+	float: left;
+}
+
+.edu-and-qualifi-pannel .qualifi-table-pannel{
+	float: right;
+}
+
+.edu-and-qualifi-pannel .qualifi-table thead tr{
+	background-color:#dddddd;
+	text-align: center;
+}
+
+
+
+
+/*
+	경력사항
+*/
+.career-info thead tr{
+	background-color:#dddddd;
+	text-align: center;
+}
+
+/*
+	학력사항 및 자격증사항
+*/
+
+.training-and-licen-pannel div{
+	width: 50%;
+}
+
+.training-and-licen-pannel div table{
+	width: calc(100% - 6px);
+}
+
+.training-and-licen-pannel .training-table-pannel{
+	float: left;
+}
+
+.training-and-licen-pannel .licen-table-pannel{
+	float: right;
+}
+
+.training-and-licen-pannel thead tr{
+	background-color:#dddddd;
+	text-align: center;
+}
+
+
+
+/*
+	SKILL INVENTORY
+*/
+.skill-inventory-table thead tr{
+	background-color:#dddddd;
+	text-align: center;
+}
+
+
+/*
+	Row 추가 버튼
+*/
+.add-row-btn-pannel{
+	width: 100%;
+	height: 20px;
+	margin: 4px 0 0 10px;
+}
+
+.add-row-btn{
+	width: 18px;
+	height: 18px;
+	font-size: 8px;
+}
+
+
+.removeTrBtn{
+	width: 18px;
+	height: 18px;
+	position:absolute;
+	margin: 4px -4px 0;
+}
+
+.pop-user-register-pannel{
+	min-height: 100px;
+	width: 480px;
+	background: #cccccc;
+	position: absolute;
+	right: 4%;
+	top: 18%;
+	border-radius:5px;
+	opacity: 0.9;
+    border-radius: 14px;
+    display: none;
+}
+
+
+.pop-user-top-btn-pannel{
+	height: 18px;
+    width: 28px;
+    background: white;
+    float: right;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+.pop-user-top-btn-pannel:hover{
+	background: #d3e7ff;
+	cursor: pointer;
+}
+
+
+.pop-user-minimize-btn{
+	background-color: #7b7b7b;
+	height: 4px;
+    width: 20px;
+    float: right;
+    margin: 10px 3px 10px 10px;
+    border-radius: 8px;
+}
+
+.pop-register-list-pannel{
+	min-height: 50px;
+    width: calc(100% - 18px);
+    background-color: white;
+    margin: 0 0 10px 9px;
+    border-radius: 10px;
+}
+
+.pop-register-list{
+	margin: 0px auto;
+    height: calc(100% - 10px);
+    width: calc(100% - 3px);
+    padding: 3px;
+}
+
+.pop-register-list thead td{
+	background-color : #cccccc;
+}
+
+.pop-register-list tbody tr:hover{
+	background-color: #fde9cc;
+	cursor: pointer;
+}
