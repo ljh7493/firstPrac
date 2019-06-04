@@ -16,9 +16,11 @@ var btnEve = function(){
 	//저장버튼 클릭시 이벤트 발생
 	$(".personalHistorySaveBtn").unbind().click(function(){
 		
-		var result = confirm("저장 하시겠습니까?");
+		var userNameEmpty = isUserNameEmpty();
 		
-		if(result){
+		if(userNameEmpty) {
+			
+		} else {			
 			
 			var personalHistoryData = personalHistoryGetData(); // 개인이력카드 작성 내용 데이터로 치환
 			
@@ -33,9 +35,6 @@ var btnEve = function(){
 			modeChange("UPDATE"); // 저장 후 상단 상태 변경
 			
 			console.log(submitDataObj);
-			
-		}else{
-			return false;
 		}
 		
 	});

@@ -401,3 +401,15 @@ var modeChange = function(mode){
 		$topHeaderStatus.text("※ 등록번호 : " + userIdx + " (수정)");
 	}
 }
+
+var isUserNameEmpty = function() {
+	var userNameValue = $("#userName").val().trim();
+	
+	if (userNameValue == "") {
+		alert("이름은 필수사항입니다.")
+		
+		return true;
+	};
+	
+	return false;
+};

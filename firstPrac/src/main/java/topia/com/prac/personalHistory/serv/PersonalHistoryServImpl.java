@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import topia.com.prac.personalHistory.dao.AbstractDAO;
+import topia.com.util.Sha256;
 
 @Service
 public class PersonalHistoryServImpl implements PersonalHistoryServ{
@@ -38,9 +39,17 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 		int statusNum = 0;
 		
 		try {
-			statusNum = (Integer)dbCon.insert("personalHistory.registerUser", inputdata);
-			
+
 			HashMap<String,Object> map = (HashMap<String,Object>)inputdata;
+			String socialNum = map.get("userSocialSecunum").toString();
+			
+			String encodedSocialNum = Sha256.encrypt(socialNum);
+			String[] encodeSocialNumArr = encodedSocialNum.split(",");
+			
+			map.replace("userSocialSecunum", encodeSocialNumArr);
+			
+			statusNum = (Integer)dbCon.insert("personalHistory.registerUser", map);
+			
 			String[] strList = (String[])map.get("flexibleData");
 			String listJsonStr = strList[0];
 			
@@ -88,7 +97,7 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 			String[] strList = (String[])map.get("flexibleData");
 			String listJsonStr = strList[0];
 			
-			String[] userIdxArr = inputdata.get("userIdx");
+//			String[] userIdxArr = inputdata.get("userIdx");
 			
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 			ObjectMapper mapper = new ObjectMapper();
@@ -110,7 +119,7 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 				System.out.println("nowLoopObj : ");
 				System.out.println(nowLoopObj);
 				
-				nowLoopObj.put("userIdx", userIdx);
+//				nowLoopObj.put("userIdx", userIdx);
 				
 				statusNum = (Integer)dbCon.insert("personalHistory.insertUserFlexibleData", nowLoopObj);
 				
