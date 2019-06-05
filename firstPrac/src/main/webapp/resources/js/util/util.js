@@ -15,49 +15,78 @@ var isEmpty = function(value) {
 	}
 };
 
-
-/*
- * 오브젝트를 드래그가 가능하게 만듬
- * 사용방법 : dragElement(document.getElementById("mydiv"));
- * 해당 Object에 position:absolute; 
+/**
+ * 페이징 텍스트 리턴
+ * 
+ * totalCnt 전체레코드수
+ * dataSize 페이지당 보여줄 데이타수
+ * pageNo 페이지 그룹 범위 1 2 3 5 6 7 8 9 10
+ * token 현재페이지
  */
-function dragElement(elmnt) {
-	  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-	  if (document.getElementById(elmnt.id + "header")) {
-	    // if present, the header is where you move the DIV from:
-	    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-	  } else {
-	    // otherwise, move the DIV from anywhere inside the DIV: 
-	    elmnt.onmousedown = dragMouseDown;
-	  }
-
-	  function dragMouseDown(e) {
-	    e = e || window.event;
-	    e.preventDefault();
-	    // get the mouse cursor position at startup:
-	    pos3 = e.clientX;
-	    pos4 = e.clientY;
-	    document.onmouseup = closeDragElement;
-	    // call a function whenever the cursor moves:
-	    document.onmousemove = elementDrag;
-	  }
-
-	  function elementDrag(e) {
-	    e = e || window.event;
-	    e.preventDefault();
-	    // calculate the new cursor position:
-	    pos1 = pos3 - e.clientX;
-	    pos2 = pos4 - e.clientY;
-	    pos3 = e.clientX;
-	    pos4 = e.clientY;
-	    // set the element's new position:
-	    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-	    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-	  }
-
-	  function closeDragElement() {
-	    // stop moving when mouse button is released:
-	    document.onmouseup = null;
-	    document.onmousemove = null;
-	  }
+var paging = function(totalCnt, dataSize, pageSize, pageNo, token){
+	totalCnt = parseInt(totalCnt);// 전체레코드수
+	dataSize = parseInt(dataSize); // 페이지당 보여줄 데이타수
+	pageSize = parseInt(pageSize); // 페이지 그룹 범위 1 2 3 5 6 7 8 9 10
+	pageNo = parseInt(pageNo); // 현재페이지
+	
+	var html = new Array(); 
+	if(totalCnt == 0){ return ""; } // 페이지 카운트
+	
+	var pageCnt = totalCnt % dataSize;
+	if(pageCnt == 0){
+		pageCnt = parseInt(totalCnt / dataSize);
+	}else{
+		pageCnt = parseInt(totalCnt / dataSize) + 1;
 	}
+	
+	var pRCnt = parseInt(pageNo / pageSize);
+	
+	if(pageNo % pageSize == 0){
+		pRCnt = parseInt(pageNo / pageSize) - 1;
+	} // 이전
+																																																																	// 화살표
+	if(pageNo > pageSize){
+		var s2;
+		if(pageNo % pageSize == 0){
+			s2 = pageNo - pageSize;
+		}else{
+			s2 = pageNo - pageNo % pageSize;
+		}
+		
+		html.push('<a href=javascript:' + token + '("');
+		html.push(s2);
+		html.push('");>');
+		html.push('◀');
+		html.push("</a>");
+		
+		}else{
+			
+			html.push('<a href="#">\n');
+			html.push('◀'); html.push('</a>');
+		} // paging
+																																																																																		// Bar
+	for(var index=pRCnt * pageSize + 1; index<(pRCnt + 1)*pageSize + 1;index++){
+		if(index == pageNo){
+			html.push('<strong>');
+			html.push(index); html.push('</strong>');
+		}else{
+			html.push('<a href=javascript:' + token + '("');
+			html.push(index); html.push('");>'); html.push(index);
+			html.push('</a>');
+		}if(index == pageCnt){
+			break;
+		}else html.push(' ');
+	} // 다음
+																																																																																									// 화살표
+	if(pageCnt > (pRCnt + 1) * pageSize){
+		html.push('<a href=javascript:' + token + '("');
+		html.push((pRCnt + 1)*pageSize+1); html.push('");>');
+		html.push('▶'); html.push('</a>');
+	}else{
+		html.push('<a href="#">');
+		html.push('▶');
+		html.push('</a>');
+	} 
+	
+	return html.join("");
+}

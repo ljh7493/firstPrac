@@ -5,6 +5,10 @@ body{
 	min-width: 860px;
 }
 
+a:link { color: #888888; text-decoration: none;}
+a:visited { color: black; text-decoration: none;}
+a:hover { color: blue; text-decoration: underline;}
+
 /*
 	input type date
 */
@@ -103,6 +107,10 @@ tbody tr{
 	font-size: 11px;
 }
 
+input[type=date]{
+	font-size: 11px;
+}
+
 
 
 
@@ -136,7 +144,17 @@ tbody tr{
 	background-color:#ffffff;
 }
 
-
+.user-info-list-pannel .user-info-table2 tr:last-child td:nth-child(2){
+	width:450px;
+}
+#userZipcode {
+	width:300px;
+}
+#personalZipcodeSearchBtn {
+	width:120px;
+	background-color:#bad0e0;
+	float:right;
+}
 
 
 
@@ -160,7 +178,7 @@ tbody tr{
 	float: right;
 }
 
-.edu-and-qualifi-pannel .qualifi-table thead tr{
+.edu-and-qualifi-pannel table thead tr{
 	background-color:#dddddd;
 	text-align: center;
 }
@@ -249,6 +267,23 @@ tbody tr{
 }
 
 
+.pop-user-search-pannel{
+    height: 18px;
+    float: left;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+.pop-user-search-pannel select{
+	height: 22px;
+	font-size: 11px;
+}
+
+.pop-user-search-pannel input{
+	margin: 0 0 1px 0;
+}
+
+
 .pop-user-top-btn-pannel{
 	height: 18px;
     width: 28px;
@@ -295,4 +330,9 @@ tbody tr{
 .pop-register-list tbody tr:hover{
 	background-color: #fde9cc;
 	cursor: pointer;
+}
+
+.pop-paging-pannel{
+	text-align: center;
+	padding: 0 0 3px 0;
 }

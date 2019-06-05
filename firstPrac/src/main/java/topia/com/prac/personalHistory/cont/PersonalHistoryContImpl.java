@@ -24,17 +24,25 @@ public class PersonalHistoryContImpl implements PersonalHistoryCont{
 	PersonalHistoryServImpl personalHistoryServ;
 	
 	@Override
-	@RequestMapping(value="/personalHistory/returnRegisterUserList", method=RequestMethod.POST)
-	public @ResponseBody ArrayList<Object> returnRegisterUserList() {       
-		ArrayList<Object> list = null;
+	@RequestMapping(value="/personalHistory/userList", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> userList(HttpServletRequest request) {      
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		HashMap<String,Object> reqMap = (HashMap<String, Object>)request.getParameterMap();
+		HashMap<String,Object> unlockedReqMap = new HashMap<String,Object>();
+		
+		// 값 복사를 위한 루프
+		for( String key : reqMap.keySet() ){
+			unlockedReqMap.put(key, reqMap.get(key));
+        }
 		
 		try {
-			list = (ArrayList<Object>)personalHistoryServ.returnRegisterUserList();
+			resultMap = (HashMap<String, Object>)personalHistoryServ.userList(unlockedReqMap);
 		} catch (Exception e) {
 			System.out.println("ERROR PersonalHistoryServImpl : " + e);
 		}
 		
-		return list;
+		return resultMap;
 		
 	}
 	
@@ -84,12 +92,10 @@ public class PersonalHistoryContImpl implements PersonalHistoryCont{
 		try {
 			personalHistoryServ.registerUserUpdate(unlockedReqMap);
 		} catch (Exception e) {
-			System.out.println("ERROR registerUser : " + e);
+			System.out.println("ERROR registerUserUpdate : " + e);
 		}
-		
-		System.out.println(unlockedReqMap);
-		
-		String userIdx = (String)unlockedReqMap.get("unlockedReqMap");
+				
+		String userIdx = (String)unlockedReqMap.get("userIdx");
 		
 		return userIdx;
 	}

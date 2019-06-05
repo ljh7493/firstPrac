@@ -21,27 +21,43 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 	AbstractDAO dbCon;
 	
 	@Override
-	public ArrayList<Object> returnRegisterUserList() {
-		ArrayList<Object> list = null;
+	/**
+	 * 기존 등록된 개인 이력카드 가져오기
+	 */
+	public HashMap<String, Object> userList(HashMap<String,Object> reqMap) {
+		HashMap<String, Object> resMap = new HashMap<String, Object>(); 
+		ArrayList<Object> list;
+		String totalCnt = "";
 		
 		try {
-			list = (ArrayList<Object>)dbCon.selectList("personalHistory.returnRegisterUserList");
+			list = (ArrayList<Object>)dbCon.selectList("personalHistory.userList", reqMap);
+			totalCnt = String.valueOf(dbCon.selectOne("personalHistory.userListCount", reqMap));
+			
+			resMap.put("list", list);
+			resMap.put("totalCnt", totalCnt);
 		} catch (Exception e) {
 			System.out.println("ERROR PersonalHistoryDAOImpl : " + e);
 		}
 		
-		return list;
+		return resMap;
 	}
 
+	
+	/**
+	 * 새로 작성한 개인 이력카드 등록
+	 * 
+	 * @param Object inputdata : map 형태의 고정데이터와 json string 형태의 유동데이터 포함
+	 * @return statusNum 등록 성공여부
+	 */
 	@Override
 	public int registerUser(Object inputdata) {
 		
 		int statusNum = 0;
 		
 		try {
-
+			
 			HashMap<String,Object> map = (HashMap<String,Object>)inputdata;
-			String socialNum = map.get("userSocialSecunum").toString();
+			String socialNum = map.get("userSocialSecunum").toString(); // 주민등록번호 암호화
 			
 			String encodedSocialNum = Sha256.encrypt(socialNum);
 			String[] encodeSocialNumArr = encodedSocialNum.split(",");
@@ -50,20 +66,26 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 			
 			statusNum = (Integer)dbCon.insert("personalHistory.registerUser", map);
 			
+			
+			// 유동형 데이터 json String -> ArrayList<HashMap<String, Object>> parsing 
+			
 			String[] strList = (String[])map.get("flexibleData");
 			String listJsonStr = strList[0];
 			
-			String userIdx = (String)map.get("user_idx");
+			String userIdx = (String)map.get("user_idx"); // 고정 데이터로 등록된 pk를 유동데이터의 fk로 사용
 			
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 			ObjectMapper mapper = new ObjectMapper();
 			list=mapper.readValue(listJsonStr,ArrayList.class);
 			
+			
+			
+			// 리스트 내부 요소 하나씩 루프돌면서 등록
+			
 			Iterator it = list.iterator();
 			while(it.hasNext()){
 				
 				HashMap<String,Object> nowLoopObj = (HashMap<String,Object>)it.next();
-				
 				
 				nowLoopObj.put("userIdx", userIdx);
 				
@@ -82,27 +104,36 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 	}
 	
 	
+	/**
+	 * 기존 개인이력카드 등록건에 대한 수정처리
+	 * 
+	 * @HashMap<String,Object> inputdata : map 형태의 고정데이터와 json string 형태의 유동데이터 포함
+	 * @return statusNum 등록 성공여부
+	 */
 	@Override
-	public int registerUserUpdate(Object inputdata) {
+	public int registerUserUpdate(HashMap<String,Object> inputdata) {
 		
 		int statusNum = 0;
-		
-		System.out.println("inputdata");
-		System.out.println(inputdata);		
 		
 		try {
 			statusNum = (Integer)dbCon.update("personalHistory.registerUserUpdate", inputdata);
 			
-			HashMap<String,Object> map = (HashMap<String,Object>)inputdata;
-			String[] strList = (String[])map.get("flexibleData");
+			String[] strList = (String[])inputdata.get("flexibleData");
 			String listJsonStr = strList[0];
 			
-//			String[] userIdxArr = inputdata.get("userIdx");
+			String[] userIdxArr = (String[])inputdata.get("userIdx");
+			String userIdx = userIdxArr[0];
+			
+			inputdata.replace("userIdx", userIdx);
 			
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 			ObjectMapper mapper = new ObjectMapper();
 			list=mapper.readValue(listJsonStr,ArrayList.class);	
 			
+			
+			// 유동데이터 삭제처리
+			// 수정건에 대해서만 로직처리로 변경하면 좋을것
+			// 현재 로직 : 고정데이터 업데이트, 유동데이터 전체삭제 후 재등록
 			dbCon.delete("personalHistory.deleteCareerData", inputdata);
 			dbCon.delete("personalHistory.deleteEduData", inputdata);
 			dbCon.delete("personalHistory.deleteLicenData", inputdata);
@@ -111,6 +142,7 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 			dbCon.delete("personalHistory.deleteTrainingData", inputdata);
 			
 			
+			// 유동데이터 재등록
 			Iterator it = list.iterator();
 			while(it.hasNext()){
 				
@@ -119,7 +151,7 @@ public class PersonalHistoryServImpl implements PersonalHistoryServ{
 				System.out.println("nowLoopObj : ");
 				System.out.println(nowLoopObj);
 				
-//				nowLoopObj.put("userIdx", userIdx);
+				nowLoopObj.put("userIdx", userIdx);
 				
 				statusNum = (Integer)dbCon.insert("personalHistory.insertUserFlexibleData", nowLoopObj);
 				

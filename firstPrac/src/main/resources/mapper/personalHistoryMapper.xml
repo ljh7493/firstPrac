@@ -5,15 +5,43 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="personalHistory">
-
-	<select id="returnRegisterUserList" resultType="hashmap">
+	<!-- 불러오기시 리스트 조회 -->
+	<select id="userList" resultType="hashmap" parameterType="hashmap">
 		SELECT user_idx
 			, user_name
 			, user_comp
 			, user_dept
-			, user_register_date
+			, date_format(user_register_date, '%Y%m%d %H:%i:%S') AS user_register_date
 		FROM user_info
+		<include refid="userListWhere"/>
+		ORDER BY user_idx DESC
+		LIMIT ${prevLimit[0]}, ${laterLimit[0]}
 	</select>
+	
+	<select id="userListCount" resultType="string">
+		SELECT COUNT(user_idx)
+		FROM user_info
+		<include refid="userListWhere"/>
+	</select>
+	
+	<sql id="userListWhere">
+		<where>
+			<if test="userListSearchPeriod != null and userListSearchPeriod != ''">
+				<choose>
+					<when test="userListSearchPeriod[0] == 'userName'">
+						user_name LIKE "%${userListSearchWord[0]}%"
+					</when>
+					<when test="userListSearchPeriod[0] == 'userComp'">
+						user_comp LIKE "%${userListSearchWord[0]}%"
+					</when>
+					<when test="userListSearchPeriod[0] == 'userDept'">
+						user_dept LIKE "%${userListSearchWord[0]}%"
+					</when>
+				</choose>
+				
+			</if>
+		</where>
+	</sql>
 	
 	<!-- 개인이력카드등록 -->
 	<insert id="registerUser" parameterType="object" useGeneratedKeys="true">
@@ -35,6 +63,7 @@
 				<if test="userTelnumWired != null">, user_telnum_wired</if>
 				<if test="userTelnumWireless != null">, user_telnum_wireless</if>
 				<if test="userEmail != null">, user_email</if>
+				<if test="userZipcode != null">, user_zipcode</if>
 				<if test="userAddress != null">, user_address</if>
 			)
 		VALUES (
@@ -54,6 +83,7 @@
 				<if test="userTelnumWired != null">, #{userTelnumWired[0]}</if>
 				<if test="userTelnumWireless != null">, #{userTelnumWireless[0]}</if>
 				<if test="userEmail != null">, #{userEmail[0]}</if>
+				<if test="userZipcode != null">, #{userZipcode[0]}</if>
 				<if test="userAddress != null">, #{userAddress[0]}</if>
 			)
 			
@@ -84,6 +114,7 @@
 		WHERE user_idx = #{userIdx[0]}
 	</update>
 	
+	<!-- 유동데이터 조회 -->
 	<insert id="insertUserFlexibleData" parameterType="hashmap">
 		INSERT INTO user_info_${tbName}
 			(
@@ -192,14 +223,32 @@
 	</delete>
 	
 	
-	
-	<select id="getRegisterData" resultType="hashmap">
-		SELECT *
+	<!-- 주민등록번호를 제외한 유저정보 조회 -->
+	<select id="getRegisterData" resultType="hashmap">	
+		SELECT user_idx
+			, user_register_date
+			, user_name
+			, user_sex
+			, user_comp
+			, user_comp_enterdate
+			, user_dept
+			, user_spot
+			, user_army_serv
+			, user_marital_status
+			, user_army_serv_enter
+			, user_army_serv_leave
+			, user_army_serv_period
+			, user_telnum_wired
+			, user_telnum_wireless
+			, user_email
+			, user_zipcode
+			, user_address
 		FROM user_info
 		WHERE
 			user_idx = #{userIdx}
 	</select>
 	
+	<!-- 유동데이터 조회 : 컬럼형태가 다양하기 떄문에 SELECT * -->
 	<select id="getRegisterFlexibleData" resultType="hashmap">
 		SELECT *
 		FROM user_info_${tbName}

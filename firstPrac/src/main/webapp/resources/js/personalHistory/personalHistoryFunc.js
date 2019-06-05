@@ -13,7 +13,9 @@ var personalHistoryGetData = function(){
 		
 		var nowDataPlainText = '"' + nowLoopId + '":"' + nowLoopValue + '"';
 		
-		if(nowLoopValue == ""){ // 해당 키에 내용이 없으면 전송 데이터에서 제외(루프는 진행)
+		var isNew = $("#userIdx").val() == ""?true:false;
+		
+		if(nowLoopValue == "" || !isNew && nowLoopId == "userSocialSecunum"){ // 해당 키에 내용이 없으면 전송 데이터에서 제외(루프는 진행) || 수정모드시 주민등록번호 전송 제외
 			return true;
 		}else{
 			userDataObjArr.push(nowDataPlainText);
@@ -33,25 +35,41 @@ var personalHistoryGetData = function(){
 	return submitDataObj;
 }
 
+
+// 불러오기시 리스트 가져오기
 var ajaxRequestRegisterList = function(){
 	
 	var getData = [];
 	
+	var nowPage = parseInt($("#userInfoPageNo").val());
+	var dataSize = parseInt($("#userInfoPageNo").val());
+	
+	var prevLimit = (nowPage - 1) * 10;
+	var laterLimit = nowPage * 10;
+	
+	var dataSize = parseInt($("#userInfoDataSize").val());
+	var reqData = {
+			"userListSearchPeriod" : $("#userListSearchPeriod").val()
+			, "userListSearchWord" : $("#userListSearchWord").val()
+			, "prevLimit" : prevLimit
+			, "laterLimit" : laterLimit
+	}
+	
 	$.ajax({
-		url: "./personalHistory/returnRegisterUserList",
+		url: "./personalHistory/userList",
 		type: "POST",
+		data: reqData,
 		dataType: "json",
 		async: false, // 비동기 -> 동기
 		success: function(data){
-			getData = data;
+			getData = data.list;
+			$("#userInfoTotalCnt").val(data.totalCnt);
 		},
 		error: function(){
 			alert("error");
-		},
-		complete: function(data){
-			getData = data.responseJSON;
 		}
 	});
+	
 	
 	return getData;
 };
@@ -86,7 +104,7 @@ var personalHistoryRegisterAjaxSend = function(submitDataObj){
 			$("#userIdx").val(userIdx);
 			
 			alert("작성한 내용이 저장되었습니다.");
-			getRegisterList(); // 리스트 새로 로드 
+			userListPagingView(); // 리스트 새로 로드 
 			modeChange("UPDATE"); // 저장 후 상단 상태 변경
 		},
 		error: function(){
@@ -246,6 +264,8 @@ var getRegisterList = function(){
 	});
 }
 
+
+// 불러오기시 데이터 조회하여 폼에 뿌려줌
 var getRegisterData = function(userIdx){
 	var getData;
 	
@@ -280,6 +300,11 @@ var getRegisterData = function(userIdx){
 	
 	
 	// 가져온 데이터 폼에 뿌려주기
+	
+	
+	var isNew = $("#userIdx").val() == ""?true:false;
+	
+	$("#userSocialSecunum").val("0000000000000");
 	
 	// 고정 데이터폼
 	var fixedData = getData.fixedData[0];
@@ -335,6 +360,7 @@ var getRegisterData = function(userIdx){
 
 
 
+// 데이터 매칭
 var convertData = {
 		"user_address": "userAddress"
 		, "user_army_serv": "userArmyServ"
@@ -342,6 +368,7 @@ var convertData = {
 		, "user_comp": "userComp"
 		, "user_comp_enterdate": "userCompEnterdate"
 		, "user_dept": "userDept"
+		, "user_zipcode": "userZipcode"
 		, "user_email": "userEmail"
 		, "user_idx": "userIdx"
 		, "user_marital_status": "userMaritalStatus"
@@ -388,28 +415,119 @@ var convertData = {
 		, "skill_etc": "skillETC"
 }
 
-
+/**
+ * 새 작성모드 및 수정모드 전환
+ */
 var modeChange = function(mode){
 	var $topHeaderStatus = $(".top-header-pannel").find("h5");
 	var userIdx = $("#userIdx").val();
+	var $userSocialSecunum = $("#userSocialSecunum");
 	
 	if(mode == "NEW"){
 		$topHeaderStatus.text("※ 새 이력 작성");
 		$("#userIdx").val("");
+		$userSocialSecunum.prop("disabled",false);
 	}else if(mode == "UPDATE"){
 		
 		$topHeaderStatus.text("※ 등록번호 : " + userIdx + " (수정)");
+		
+		$userSocialSecunum.prop("disabled",true);
 	}
 }
 
-var isUserNameEmpty = function() {
-	var userNameValue = $("#userName").val().trim();
+/**
+ * 값이 유효한지 혹은 비어있는지 체크
+ */
+var regexAndEmptyCheck = function() {
+	var val;
+	var $obj;
+	var regExp;
+	var regResult;
 	
-	if (userNameValue == "") {
-		alert("이름은 필수사항입니다.")
-		
-		return true;
+	var isNew = $("#userIdx").val() == ""?true:false;
+	
+	// 이름
+	$obj = $("#userName");
+	val = $obj.val().trim();
+	if (val == "") {
+		if(!alert("이름은 필수 입력 사항입니다.")) $obj.focus();
+		return false;
 	};
 	
-	return false;
+	// 주민등록번호
+	
+	if(isNew){ // 새 이력 작성인경우 주민등록번호 유효성 검사
+		
+		$obj = $("#userSocialSecunum");
+		val = $obj.val().trim();
+		regExp = new RegExp("^\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|[3][01])\\-?[1-4][0-9]{6}$");
+		if (val == ""){
+			if(!alert("주민등록번호는 필수 입력 사항입니다.")) $obj.focus();
+			return false;
+		};
+		regResult = regExp.test(val);
+		if(!regResult){
+			if(!alert("잘못 된 주민등록번호 입니다.")) $obj.focus();
+			return false;
+		}
+				
+	}
+	
+	// 휴대전화번호
+	
+	$obj = $("#userTelnumWireless");
+	val = $obj.val().trim();
+	regExp = /^\d{3}-\d{3,4}-\d{4}$/;
+	regResult = regExp.test(val);
+	if(!regResult && !isEmpty(val)){
+		if(!alert("잘못 된 휴대전화번호 입니다.")) $obj.focus();
+		return false;
+	}
+	
+	
+	// 유선전화번호
+	
+	$obj = $("#userTelnumWired");
+	val = $obj.val().trim();
+	regExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+	regResult = regExp.test(val);
+	if(!regResult && !isEmpty(val)){
+		if(!alert("잘못 된 전화번호 입니다.")) $obj.focus();
+		return false;
+	}
+	
+	
+	// 이메일
+	
+	$obj = $("#userEmail");
+	val = $obj.val().trim();
+	regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+	regResult = regExp.test(val);
+	if(!regResult && !isEmpty(val)){
+		if(!alert("잘못 된 이메일 입니다.")) $obj.focus();
+		return false;
+	}
+	
+	
+	
+	return true;
 };
+
+
+
+var userListPagingView = function(nowPage){
+	if(isEmpty(nowPage)) $("#userInfoPageNo").val("1");
+	else $("#userInfoPageNo").val(nowPage);
+	
+	// ajax 처리 완료 후 totalcnt 값 생기면
+	getRegisterList();
+	
+	var totalCnt = parseInt($("#userInfoTotalCnt").val());
+	var dataSize = parseInt($("#userInfoDataSize").val());
+	var pageSize = parseInt($("#userInfoDataSize").val());
+	
+	
+	$(".pop-paging-pannel").html(paging(totalCnt, dataSize, pageSize , nowPage, "userListPagingView"));
+	
+}

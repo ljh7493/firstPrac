@@ -11,7 +11,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
 public interface PersonalHistoryCont {
-	public ArrayList<Object> returnRegisterUserList();
+	public HashMap<String, Object> userList(HttpServletRequest request);
 	public String registerUser(HttpServletRequest request);
 	public String registerUserUpdate(HttpServletRequest request);
 	public int updateUser();

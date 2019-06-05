@@ -6,14 +6,17 @@
 <head>
 
 	<script src="./resources/compnent/jquery-3.3.1.min.js"></script>
+	<script src="./resources/compnent/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+	<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js?autoload=false"></script>
 	
 	<script src="./resources/js/util/util.js"></script>
 	
 	<script src="./resources/js/personalHistory/personalHistory.js"></script>
 	<script src="./resources/js/personalHistory/personalHistoryFunc.js"></script>
 	
+	<link rel="stylesheet" type="text/css" href="./resources/compnent/jquery-ui-1.12.1.custom/jquery-ui.min.css">
 	<link rel="stylesheet" type="text/css" href="./resources/css/personalHistory/personalHistory.css">
-	
+
 	<title>Home</title>
 </head>
 <body>
@@ -55,12 +58,18 @@
 		
 			<tbody>
 				<tr>
-					<td>성명</td>
+					<td>*성명</td>
 					<td><input type="text" id="userName"></td>
-					<td>주민등록번호</td>
-					<td colspan="3"><input type="text" id="userSocialSecunum"></td>
+					<td>*주민등록번호</td>
+					<td colspan="3"><input type="password" id="userSocialSecunum" maxlength="13" placeholder='  "-" 제외한 숫자만 입력'></td>
 					<td>성별</td>
-					<td><input type="text" id="userSex"></td>
+					<td>
+						<select id="userSex">
+							<option value="">선택없음</option>
+							<option value="남성">남성</option>
+							<option value="여성">여성</option>
+						</select>
+					</td>
 				</tr>
 				
 				<tr>
@@ -78,7 +87,13 @@
 					<td>병역</td>
 					<td><input type="text" id="userArmyServ"></td>
 					<td>결혼</td>
-					<td><input type="text" id="userMaritalStatus"></td>
+					<td>
+						<select id="userMaritalStatus">
+							<option value="">선택없음</option>
+							<option value="기혼">기혼</option>
+							<option value="미혼">미혼</option>
+						</select>
+					</td>
 				</tr>
 				
 				<tr>
@@ -104,18 +119,25 @@
 			<tbody>
 				<tr>
 					<td>전화</td>
-					<td><input type="text" placeholder=" (유선)" id="userTelnumWired"></td>
-					<td><input type="text" placeholder=" (무선)" id="userTelnumWireless"></td>
+					<td><input type="tel" placeholder=' 휴대전화 "-" 포함' id="userTelnumWireless"></td>
+					<td><input type="tel" placeholder=' 유선 "-" 포함' id="userTelnumWired"></td>
 				</tr>
 				
 				<tr>
 					<td>E-Mail</td>
-					<td colspan="2"><input type="text" id="userEmail"></td>
+					<td colspan="2"><input type="email" id="userEmail"></td>
 				</tr>
 				
 				<tr>
 					<td>주소</td>
-					<td colspan="2"><input type="text" id="userAddress"></td>
+					<td>
+						<input type="text" id="userZipcode" placeholder="우편번호">
+						<input type="button" id="personalZipcodeSearchBtn" value="우편번호 찾기" />
+					</td>
+					<td>
+						<input type="text" id="userAddress" placeholder="주소">
+						<!-- <input type="text" id="userAddress"> -->
+					</td>
 				</tr>
 			</tbody>
 			
@@ -132,10 +154,17 @@
 		<div class="edu-and-qualifi-pannel">
 			<div class="edu-table-pannel">
 				<table class="edu-table flexibleTable" tb="edu">
-				
+					<thead>
+						<tr>
+							<td>학교명</td>
+							<td>상태</td>
+							<td colspan="2">년</td>
+							<td colspan="2">월</td>
+						</tr>
+					</thead>
 					<tbody>
 						<tr>
-							<td><input type="text" placeholder=" (학교명)" class="eduSchoolName"></td>
+							<td><input type="text" class="eduSchoolName"></td>
 							<td>
 								<select class="eduStatus">
 									<option value="">선택없음</option>
@@ -145,9 +174,9 @@
 									<option value="졸업예정">졸업예정</option>
 								</select>
 							</td>
-							<td><input type="text" placeholder=" (0000)" class="eduYear"></td>
+							<td><input type="text" placeholder="" class="eduYear"></td>
 							<td>년</td>
-							<td><input type="text" placeholder=" (00)" class="eduMonth"></td>
+							<td><input type="text" placeholder="" class="eduMonth"></td>
 							<td>월</td>
 						</tr>
 					</tbody>
@@ -206,7 +235,7 @@
 				<thead>
 					<tr>
 						<td rowspan="2">회사명</td>
-						<td colspan="2">기간(yyyy.mm ~ yyyy.mm)</td>
+						<td colspan="2">재직기간</td>
 						<td rowspan="2">직위</td>
 						<td rowspan="2">담당업무</td>
 					</tr>
@@ -322,7 +351,7 @@
 				<thead>
 					<tr>
 						<td rowspan="2">프로젝트명<br>업무명</td>
-						<td colspan="2">참여기간<br>(yyyy.mm ~<br>yyyy.mm)</td>
+						<td colspan="2">참여기간</td>
 						<td rowspan="2">고객사</td>
 						<td rowspan="2">근무회사</td>
 						<td colspan="2">개발분야</td>
@@ -373,6 +402,22 @@
 	
 	
 	<div class="pop-user-register-pannel" id="drag-ele1">
+		<div class="pop-user-search-pannel">
+			
+			<input type="hidden" id="userInfoTotalCnt">
+			<input type="hidden" id="userInfoDataSize" value="10">
+			<input type="hidden" id="userInfoPageSize" value="10">
+			<input type="hidden" id="userInfoPageNo" value="1">
+			
+			<select id="userListSearchPeriod">
+				<option value="">선택없음</option>
+				<option value="userName">이름</option>
+				<option value="userComp">소속회사</option>
+				<option value="userDept">부서</option>
+			</select>
+			<input type="text" id="userListSearchWord">
+			<button id="userListSearchBtn">검색</button>
+		</div>
 		<div class="pop-user-top-btn-pannel">
 			<div class="pop-user-minimize-btn">
 			</div>
@@ -381,6 +426,7 @@
 		<div class="clear-pannel"></div>
 		
 		<div class="pop-register-list-pannel">
+		
 			<table class="pop-register-list">
 				<thead>
 					<tr>
@@ -394,6 +440,9 @@
 				<tbody>
 				</tbody>
 			</table>
+			
+			<div class="pop-paging-pannel">
+			</div>
 		</div>
 	</div>
 	

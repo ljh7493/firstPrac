@@ -8,8 +8,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
 public interface PersonalHistoryServ {
-	public ArrayList<Object> returnRegisterUserList();
-	public int registerUser(Object intputdata);
-	public int registerUserUpdate(Object intputdata);
+	public HashMap<String, Object> userList(HashMap<String,Object> reqMap); 
+	int registerUser(Object inputdata);
+	public int registerUserUpdate(HashMap<String,Object> intputdata);
 	public HashMap<String, Object> getRegisterData(HashMap<String, Object> userIdx) throws JsonParseException, JsonMappingException, IOException;
 }
