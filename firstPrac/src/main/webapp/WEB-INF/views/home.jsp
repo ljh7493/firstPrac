@@ -6,6 +6,7 @@
 <head>
 
 	<script src="./resources/compnent/jquery-3.3.1.min.js"></script>
+	<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js?autoload=false"></script>
 	
 	<script src="./resources/js/util/util.js"></script>
 	
@@ -115,7 +116,14 @@
 				
 				<tr>
 					<td>주소</td>
-					<td colspan="2"><input type="text" id="userAddress"></td>
+					<td>
+						<input type="text" id="userZipcode" placeholder="우편번호">
+						<input type="button" id="personalZipcodeSearchBtn" value="우편번호 찾기" />
+					</td>
+					<td>
+						<input type="text" id="userAddress" placeholder="주소">
+						<!-- <input type="text" id="userAddress"> -->
+					</td>
 				</tr>
 			</tbody>
 			

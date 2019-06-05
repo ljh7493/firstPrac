@@ -35,6 +35,7 @@
 				<if test="userTelnumWired != null">, user_telnum_wired</if>
 				<if test="userTelnumWireless != null">, user_telnum_wireless</if>
 				<if test="userEmail != null">, user_email</if>
+				<if test="userZipcode != null">, user_zipcode</if>
 				<if test="userAddress != null">, user_address</if>
 			)
 		VALUES (
@@ -54,6 +55,7 @@
 				<if test="userTelnumWired != null">, #{userTelnumWired[0]}</if>
 				<if test="userTelnumWireless != null">, #{userTelnumWireless[0]}</if>
 				<if test="userEmail != null">, #{userEmail[0]}</if>
+				<if test="userZipcode != null">, #{userZipcode[0]}</if>
 				<if test="userAddress != null">, #{userAddress[0]}</if>
 			)
 			
@@ -80,6 +82,7 @@
 			, user_telnum_wired = <choose><when test="userTelnumWired != null">#{userTelnumWired[0]}</when><otherwise>NULL</otherwise></choose>
 			, user_telnum_wireless = <choose><when test="userTelnumWireless != null">#{userTelnumWireless[0]}</when><otherwise>NULL</otherwise></choose>
 			, user_email = <choose><when test="userEmail != null">#{userEmail[0]}</when><otherwise>NULL</otherwise></choose>
+			, user_zipcode = <choose><when test="userZipcode != null">#{userZipcode[0]}</when><otherwise>NULL</otherwise></choose>
 			, user_address = <choose><when test="userAddress != null">#{userAddress[0]}</when><otherwise>NULL</otherwise></choose>
 		WHERE user_idx = #{userIdx[0]}
 	</update>

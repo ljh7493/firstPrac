@@ -135,8 +135,17 @@ tbody tr{
 .user-info-list-pannel .user-info-table2 tr td:not(:first-child){
 	background-color:#ffffff;
 }
-
-
+.user-info-list-pannel .user-info-table2 tr:last-child td:nth-child(2){
+	width:450px;
+}
+#userZipcode {
+	width:300px;
+}
+#personalZipcodeSearchBtn {
+	width:120px;
+	background-color:#bad0e0;
+	float:right;
+}
 
 
 
