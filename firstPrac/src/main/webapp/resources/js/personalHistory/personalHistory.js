@@ -98,12 +98,15 @@ var btnEve = function(){
 		
 	});
 	
+<<<<<<< HEAD
 	
 	// 불러오기창 검색버튼
 	$("#userListSearchBtn").click(function(){
 		userListPagingView(parseInt($("#userInfoPageNo").val()));
 	});	
 	
+=======
+>>>>>>> d527b2c5ee681457cdac68ab1f772bd89096691a
 	$("#personalZipcodeSearchBtn").unbind().click(function() {
 		daum.postcode.load(function(){
 	        new daum.Postcode({
@@ -133,7 +136,10 @@ var btnEve = function(){
 	        }).open();
 	    });
 	});
+<<<<<<< HEAD
 	
+=======
+>>>>>>> d527b2c5ee681457cdac68ab1f772bd89096691a
 };
 
 

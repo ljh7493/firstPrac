@@ -143,7 +143,10 @@ input[type=date]{
 .user-info-list-pannel .user-info-table2 tr td:not(:first-child){
 	background-color:#ffffff;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> d527b2c5ee681457cdac68ab1f772bd89096691a
 .user-info-list-pannel .user-info-table2 tr:last-child td:nth-child(2){
 	width:450px;
 }

@@ -6,7 +6,10 @@
 <head>
 
 	<script src="./resources/compnent/jquery-3.3.1.min.js"></script>
+<<<<<<< HEAD
 	<script src="./resources/compnent/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+=======
+>>>>>>> d527b2c5ee681457cdac68ab1f772bd89096691a
 	<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js?autoload=false"></script>
 	
 	<script src="./resources/js/util/util.js"></script>
